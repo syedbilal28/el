@@ -58,14 +58,20 @@ def GetRequests(request):
     request_objs=RequestSerializer(request_objs,many=True)
     return JsonResponse(request_objs.data,safe=False)
 
-@api_view(["GET"])
+@api_view(["GET","PUT"])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def GetRequest(request,request_id):
-    
-    request_obj=Request.objects.get(pk=request_id)
-    request_obj=RequestSerializer(request_obj)
-    return JsonResponse(request_obj.data,safe=False)
+def GetRequest(request,request_id):    
+    if request.method == "GET":
+        request_obj=Request.objects.get(pk=request_id)
+        request_obj=RequestSerializer(request_obj)
+        return JsonResponse(request_obj.data,safe=False)
+    elif request.method == "PUT":
+        data=json.loads(request.body)
+        request_obj=Request.objects.get(pk=request_id)
+        request_obj=RequestSerializer(request_obj)
+        request_obj.update(data=data)
+        return JsonResponse(request_obj.data,safe=False)
 
 
 
