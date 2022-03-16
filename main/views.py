@@ -10,16 +10,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import authentication_classes,permission_classes,api_view
 from rest_framework.authtoken.models import Token
 # Create your views here.
-def index(request):
-    return HttpResponse("Hello World")
-
+@csrf_exempt
 def Login(request):
     body=json.loads(request.body)
     email=body.get("email")
     password=body.get("password")
     user=authenticate(request,username=email,password=password)
     if user:
-        token=user.token
+        token=Token.objects.get(user=user)
         return JsonResponse({"token":token.key})
     return HttpResponse(status=404)
 @csrf_exempt
@@ -28,6 +26,8 @@ def Signup(request,user_type):
     user=UserSerializer(data=body)
     if user.is_valid():
         user=user.save()
+    else:
+        return JsonResponse({"message":"email has been already taken"},status=403)
     profile=Profile.objects.create(user=user,phone=body.get("phone"),status=user_type,department=body.get("department"))
 
     return HttpResponse(status=201)
