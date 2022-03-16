@@ -2,7 +2,7 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from django.contrib.auth import authenticate
-from .models import CostModel, Profile, Request
+from .models import Attachment, CostModel, Profile, Request
 from .serializers import CostModelSerializer, ProfileSerializer, RequestSerializer, UserSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import TokenAuthentication
@@ -36,13 +36,20 @@ def Signup(request,user_type):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def CreateRequest(request):
-    body=json.loads(request.body)
+    body=request.POST
     token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
     user=token.user    
-    body["created_by"]=user.profile.pk
-    print(body)
-    request_obj=RequestSerializer(data=body)
+    data=dict()
+    data["name"]=body["name"]
+    data["description"]=body["description"]
+    data["created_by"]=user.profile.pk
+    request_obj=RequestSerializer(data=data)
     if request_obj.is_valid():
+        
+        request_obj=request_obj.save()
+        attachment = request.FILES.get("attachment")
+        attachment_obj=Attachment.objects.create(file=attachment)
+        request_obj.attachments.add(attachment_obj)
         request_obj.save()
         return HttpResponse(status=201)
     return HttpResponse(status=403)
@@ -67,11 +74,15 @@ def GetRequest(request,request_id):
         request_obj=RequestSerializer(request_obj)
         return JsonResponse(request_obj.data,safe=False)
     elif request.method == "PUT":
-        data=json.loads(request.body)
+        data=request.POST
+        body=dict()
+        body["name"]=data["name"]
+        body["description"]=data["description"]
         request_obj=Request.objects.get(pk=request_id)
-        request_obj=RequestSerializer(request_obj,data=data,partial=True)
+        request_obj=RequestSerializer(request_obj,data=body,partial=True)
         if request_obj.is_valid():
             request_obj.save()
+
         return JsonResponse(request_obj.data,safe=False)
 
 @api_view(["GET"])
@@ -102,7 +113,7 @@ def AssignStatus(request,request_id):
         request_obj.status=data.get("status")
         request_obj.save()
         return HttpResponse(status=201)
-    return HttpResponse(stauts=403)
+    return HttpResponse(status=403)
 
 @api_view(["POST"])
 @authentication_classes([TokenAuthentication])
@@ -128,7 +139,7 @@ def GetSolutionDesigners(request):
     if user.profile.status== "Demand Manager":
         designers=Profile.objects.filter(status="Solution Designer")
         designers=ProfileSerializer(designers,many=True)
-        return JsonResponse(designers.data,status=200)
+        return JsonResponse(designers.data,safe=False)
     return HttpResponse(status=403)
 
 @api_view(["GET"])

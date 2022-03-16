@@ -5,6 +5,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
         fields=["username","email","password","first_name","last_name"]
+        extra_kwargs = {'password': {'write_only': True}}
+
     def create(self, validated_data):
         obj = User.objects.create(**validated_data)
         obj.set_password(validated_data["password"])
@@ -25,9 +27,10 @@ class RequestSerializer(serializers.ModelSerializer):
             "created_by",
             "last_modified",
             "timestamp",
-            "status"
+            "status",
+            "attachments"
             ]
-    
+        extra_kwargs = {"attachments": {"required": False, "allow_null": True}}
 class CostModelSerializer(serializers.ModelSerializer):
     class Meta:
         model=CostModel
