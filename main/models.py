@@ -15,6 +15,10 @@ class Profile(models.Model):
 class Attachment(models.Model):
     file=models.FileField()
 
+class CostModel(models.Model):
+    name=models.CharField(max_length=200)
+    def __str__(self):
+        return self.name
 
 class Request(models.Model):
     timestamp=models.DateTimeField(auto_now_add=True)
@@ -25,7 +29,7 @@ class Request(models.Model):
     attachments=models.ManyToManyField(Attachment)
     status=models.CharField(max_length=256,default="In Progress")
     assigned_to=models.ForeignKey(Profile,on_delete=models.CASCADE,null=True,related_name="solution_designer")
-
+    cost_model=models.ForeignKey(CostModel,on_delete=models.SET_NULL,null=True)
 class Feedback(models.Model):
     user=models.ForeignKey(Profile,on_delete=models.CASCADE)
     comment=models.CharField(max_length=1024)

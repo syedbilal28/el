@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, Request
+from .models import CostModel, Profile, Request
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
@@ -28,4 +28,7 @@ class RequestSerializer(serializers.ModelSerializer):
             "status"
             ]
     
-    
+class CostModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=CostModel
+        fields="__all__"

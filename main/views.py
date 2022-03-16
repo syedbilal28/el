@@ -2,8 +2,8 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from django.contrib.auth import authenticate
-from .models import Profile, Request
-from .serializers import ProfileSerializer, RequestSerializer, UserSerializer
+from .models import CostModel, Profile, Request
+from .serializers import CostModelSerializer, ProfileSerializer, RequestSerializer, UserSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -51,7 +51,7 @@ def CreateRequest(request):
 @api_view(["GET"])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def GetRequests(request):
+def GetRequestsUser(request):
     token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
     user=token.user
     request_objs=Request.objects.filter(created_by=user.profile)
@@ -81,7 +81,11 @@ def GetAllRequests(request):
     token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
     user=token.user
     if user.profile.status== "Demand Manager" or user.profile.status=="Manager":
-        request_obj=Request.objects.all()
+        status_filter=request.GET.get("status")
+        if status_filter:
+            request_obj=Request.objects.filter(status=status_filter)
+        else:
+            request_obj=Request.objects.all()
         request_obj=RequestSerializer(request_obj,many=True)
         return JsonResponse(request_obj.data,safe=False)
     return HttpResponse(status=403)
@@ -115,7 +119,65 @@ def AssignSolutionDesigner(request,request_id):
         return HttpResponse(status=201)
     return HttpResponse(stauts=403)
 
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def GetSolutionDesigners(request):
+    token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
+    user=token.user
+    if user.profile.status== "Demand Manager":
+        designers=Profile.objects.filter(status="Solution Designer")
+        designers=ProfileSerializer(designers,many=True)
+        return JsonResponse(designers.data,status=200)
+    return HttpResponse(status=403)
 
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def GetRequestsSolutionDesigner(request):
+    token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
+    user=token.user
+    if user.profile.status== "Solution Designer":
+        request_obj=Request.objects.filter(assigned_to=user.profile)
+        request_obj=RequestSerializer(request_obj,many=True)
+        return JsonResponse(request_obj.data,safe=False)
+    return HttpResponse(status=403)
+
+@api_view(["POST"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def AssignCostModel(request,request_id):
+    token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
+    user=token.user
+    if user.profile.status== "Solution Designer":
+        data=json.loads(request.body)
+        request_obj=Request.objects.get(pk=request_id)
+        cost_model=CostModel.objects.get(name=data.get("cost_model"))
+        request_obj.cost_model=cost_model
+        request_obj.save()
+        return HttpResponse(status=201)
+    return HttpResponse(status=403)
+
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def ReturnCostModels(request):
+    token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
+    user=token.user
+    if user.profile.status== "Solution Designer":
+        cost_models=CostModel.objects.all()
+        cost_models=CostModelSerializer(cost_models,many=True)
+        return JsonResponse(cost_models.data,safe=False)
+    return HttpResponse(status=403)
+
+
+
+
+
+
+
+
+ 
 
 
 
