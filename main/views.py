@@ -69,9 +69,60 @@ def GetRequest(request,request_id):
     elif request.method == "PUT":
         data=json.loads(request.body)
         request_obj=Request.objects.get(pk=request_id)
-        request_obj=RequestSerializer(request_obj)
-        request_obj.update(data=data)
+        request_obj=RequestSerializer(request_obj,data=data,partial=True)
+        if request_obj.is_valid():
+            request_obj.save()
         return JsonResponse(request_obj.data,safe=False)
+
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def GetAllRequests(request):
+    token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
+    user=token.user
+    if user.profile.status== "Demand Manager" or user.profile.status=="Manager":
+        request_obj=Request.objects.all()
+        request_obj=RequestSerializer(request_obj,many=True)
+        return JsonResponse(request_obj.data,safe=False)
+    return HttpResponse(status=403)
+
+@api_view(["POST"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def AssignStatus(request,request_id):
+    token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
+    user=token.user
+    if user.profile.status== "Demand Manager":
+        data=json.loads(request.body)
+        request_obj=Request.objects.get(pk=request_id)
+        request_obj.status=data.get("status")
+        request_obj.save()
+        return HttpResponse(status=201)
+    return HttpResponse(stauts=403)
+
+@api_view(["POST"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def AssignSolutionDesigner(request,request_id):
+    token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
+    user=token.user
+    if user.profile.status== "Demand Manager":
+        data=json.loads(request.body)
+        request_obj=Request.objects.get(pk=request_id)
+        solution_designer=Profile.objects.get(pk=int(data.get("designer")))
+        request_obj.assigned_to=solution_designer
+        request_obj.save()
+        return HttpResponse(status=201)
+    return HttpResponse(stauts=403)
+
+
+
+
+
+    
+    
+
+
 
 
 
