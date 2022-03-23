@@ -131,4 +131,5 @@ dmypy.json
 
 #binary files
 main/__pycache__/
-el/__pycache__/
+el/__pycache__/"env/" 
+"venv/" 
