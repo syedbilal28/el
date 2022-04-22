@@ -22,11 +22,14 @@ def Login(request):
     return HttpResponse(status=404)
 @csrf_exempt
 def Signup(request,user_type):
+    print(request.body)
     body=json.loads(request.body)
+    body["username"]=body["email"]
     user=UserSerializer(data=body)
     if user.is_valid():
         user=user.save()
     else:
+        print(user.errors)
         return JsonResponse({"message":"email has been already taken"},status=403)
     profile=Profile.objects.create(user=user,phone=body.get("phone"),status=user_type,department=body.get("department"))
 
