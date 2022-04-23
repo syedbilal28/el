@@ -18,7 +18,8 @@ def Login(request):
     user=authenticate(request,username=email,password=password)
     if user:
         token=Token.objects.get(user=user)
-        return JsonResponse({"token":token.key})
+        status=user.profile.status
+        return JsonResponse({"token":token.key,"status":status})
     return HttpResponse(status=404)
 @csrf_exempt
 def Signup(request,user_type):
