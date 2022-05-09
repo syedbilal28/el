@@ -2,7 +2,7 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from django.contrib.auth import authenticate
-from .models import Attachment, CostModel, Profile, Request
+from .models import Attachment, CostModel, Feedback, Profile, Request
 from .serializers import CostModelSerializer, ProfileSerializer, RequestSerializer, UserSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import TokenAuthentication
@@ -19,7 +19,8 @@ def Login(request):
     if user:
         token=Token.objects.get(user=user)
         status=user.profile.status
-        return JsonResponse({"token":token.key,"status":status})
+        profile=ProfileSerializer(user.profile).data
+        return JsonResponse({"token":token.key,"status":status,"profile":profile})
     return HttpResponse(status=404)
 @csrf_exempt
 def Signup(request,user_type):
@@ -129,6 +130,8 @@ def AssignSolutionDesigner(request,request_id):
         data=json.loads(request.body)
         request_obj=Request.objects.get(pk=request_id)
         solution_designer=Profile.objects.get(pk=int(data.get("designer")))
+        # comment=data["comment"]
+        # feedback=Feedback.objects.create()
         request_obj.assigned_to=solution_designer
         request_obj.save()
         return HttpResponse(status=201)
