@@ -34,8 +34,11 @@ def Signup(request,user_type):
         print(user.errors)
         return JsonResponse({"message":"email has been already taken"},status=403)
     profile=Profile.objects.create(user=user,phone=body.get("phone"),status=user_type,department=body.get("department"))
+    token=Token.objects.get(user=user)
+    status=user.profile.status
+    profile=ProfileSerializer(profile).data
 
-    return HttpResponse(status=201)
+    return JsonResponse({"profile": profile,"token":token.key,"status":status},status=201)
 @csrf_exempt
 @api_view(["POST"])
 @authentication_classes([TokenAuthentication])
