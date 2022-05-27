@@ -173,8 +173,10 @@ def AssignCostModel(request,request_id):
     if user.profile.status== "Solution Designer":
         data=json.loads(request.body)
         request_obj=Request.objects.get(pk=request_id)
-        cost_model=CostModel.objects.get(name=data.get("cost_model"))
-        request_obj.cost_model=cost_model
+        cost_models=CostModel.objects.filter(name__in=data.get("cost_model"))
+        if len(cost_models) >1:
+            for i in cost_models:
+                request_obj.cost_model.add(i)
         request_obj.save()
         return HttpResponse(status=201)
     return HttpResponse(status=403)

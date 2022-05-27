@@ -18,19 +18,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model=Profile
         fields=["id","user","phone","department","status"]
     
-class RequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Request
-        fields=[
-            "name",
-            "description",
-            "created_by",
-            "last_modified",
-            "timestamp",
-            "status",
-            "attachments"
-            ]
-        extra_kwargs = {"attachments": {"required": False, "allow_null": True}}
+
 class CostModelSerializer(serializers.ModelSerializer):
     class Meta:
         model=CostModel
@@ -40,3 +28,19 @@ class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model=Feedback
         fields="__all__"
+
+class RequestSerializer(serializers.ModelSerializer):
+    cost_model=CostModelSerializer(many=True)
+    class Meta:
+        model=Request
+        fields=[
+            "name",
+            "description",
+            "created_by",
+            "last_modified",
+            "timestamp",
+            "status",
+            "attachments",
+            "cost_model"
+            ]
+        extra_kwargs = {"attachments": {"required": False, "allow_null": True}}

@@ -29,7 +29,7 @@ class Request(models.Model):
     attachments=models.ManyToManyField(Attachment)
     status=models.CharField(max_length=256,default="In Progress")
     assigned_to=models.ForeignKey(Profile,on_delete=models.CASCADE,null=True,related_name="solution_designer")
-    cost_model=models.ForeignKey(CostModel,on_delete=models.SET_NULL,null=True)
+    cost_model=models.ManyToManyField(CostModel)
 class Feedback(models.Model):
     user=models.ForeignKey(Profile,on_delete=models.CASCADE)
     comment=models.CharField(max_length=1024)
