@@ -1,4 +1,5 @@
 import json
+from xml.etree.ElementTree import Comment
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from django.contrib.auth import authenticate
@@ -193,7 +194,31 @@ def ReturnCostModels(request):
         return JsonResponse(cost_models.data,safe=False)
     return HttpResponse(status=403)
 
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def GetComment(request,request_id):
+    token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
+    user=token.user
+    if user.profile.status== "user":
+        comment=Request.objects.get(pk=request_id).comment
+        return JsonResponse({"comment":comment})
+    return HttpResponse(status=403)
 
+@api_view(["POST"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def CreateComment(request):
+    token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
+    user=token.user
+    body=json.loads(request.body)
+    if user.profile.status== "user":
+        request_id=body.get("request_id")
+        request_obj=Request.objects.get(pk=request_id)
+        request_obj.comment=body.get("comment")
+        request_obj.save()
+        return HttpResponse(status=201)
+    return HttpResponse(status=403)
 
 
 

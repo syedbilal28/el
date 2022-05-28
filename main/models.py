@@ -30,6 +30,7 @@ class Request(models.Model):
     status=models.CharField(max_length=256,default="In Progress")
     assigned_to=models.ForeignKey(Profile,on_delete=models.CASCADE,null=True,related_name="solution_designer")
     cost_model=models.ManyToManyField(CostModel)
+    comment=models.CharField(max_length=1000,null=True,blank=True)
 class Feedback(models.Model):
     user=models.ForeignKey(Profile,on_delete=models.CASCADE)
     comment=models.CharField(max_length=1024)

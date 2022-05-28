@@ -13,7 +13,9 @@ urlpatterns=[
     path("designers/",views.GetSolutionDesigners,name="GetSolutionDesigners"),
     path("solution-designer/requests/",views.GetRequestsSolutionDesigner,name="SolutionDesignerRequests"),
     path("requests/assign/<int:request_id>/",views.AssignCostModel,name="AssignCostModel"),
-    path("cost-models/",views.ReturnCostModels,name="ReturnCostModels")
+    path("cost-models/",views.ReturnCostModels,name="ReturnCostModels"),
+    path("get-comment/<int:request_id>/",views.GetComment,name="GetComment"),
+    path("create-comment/",views.CreateComment,name="CreateComment")
 
     
 ]

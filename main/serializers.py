@@ -41,6 +41,7 @@ class RequestSerializer(serializers.ModelSerializer):
             "timestamp",
             "status",
             "attachments",
-            "cost_model"
+            "cost_model",
+            "comment"
             ]
-        extra_kwargs = {"attachments": {"required": False, "allow_null": True}}
+        extra_kwargs = {"attachments": {"required": False, "allow_null": True},"comment": {"required": False, "allow_null": True}}
