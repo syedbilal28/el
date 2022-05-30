@@ -30,10 +30,10 @@ class FeedbackSerializer(serializers.ModelSerializer):
         fields="__all__"
 
 class RequestSerializer(serializers.ModelSerializer):
-    cost_model=CostModelSerializer(many=True)
+    cost_model=CostModelSerializer(many=True,required=False)
     class Meta:
         model=Request
-        fields=[
+        fields=["id",
             "name",
             "description",
             "created_by",
@@ -44,4 +44,9 @@ class RequestSerializer(serializers.ModelSerializer):
             "cost_model",
             "comment"
             ]
-        extra_kwargs = {"attachments": {"required": False, "allow_null": True},"comment": {"required": False, "allow_null": True}}
+        
+        read_only_fields=['cost_model']
+        extra_kwargs = {"attachments": {"required": False, "allow_null": True},
+        "comment": {"required": False, "allow_null": True},
+        }
+        

@@ -61,6 +61,7 @@ def CreateRequest(request):
         request_obj.attachments.add(attachment_obj)
         request_obj.save()
         return HttpResponse(status=201)
+    print(request_obj.errors)
     return HttpResponse(status=403)
 
 
@@ -202,6 +203,7 @@ def GetComment(request,request_id):
     user=token.user
     if user.profile.status== "user":
         comment=Request.objects.get(pk=request_id).comment
+        print(comment)
         return JsonResponse({"comment":comment})
     return HttpResponse(status=403)
 
@@ -212,13 +214,13 @@ def CreateComment(request):
     token=Token.objects.get(key=request.headers["Authorization"].split(" ")[-1])
     user=token.user
     body=json.loads(request.body)
-    if user.profile.status== "user":
-        request_id=body.get("request_id")
-        request_obj=Request.objects.get(pk=request_id)
-        request_obj.comment=body.get("comment")
-        request_obj.save()
-        return HttpResponse(status=201)
-    return HttpResponse(status=403)
+    # if user.profile.status== "user":
+    request_id=body.get("request_id")
+    request_obj=Request.objects.get(pk=request_id)
+    request_obj.comment=body.get("comment")
+    request_obj.save()
+    return HttpResponse(status=201)
+    # return HttpResponse(status=403)
 
 
 
