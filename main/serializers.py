@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import CostModel, Feedback, Profile, Request
+from .models import Attachment, CostModel, Feedback, Profile, Request
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
@@ -29,8 +29,13 @@ class FeedbackSerializer(serializers.ModelSerializer):
         model=Feedback
         fields="__all__"
 
+class AttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Attachment
+        fields="__all__"
 class RequestSerializer(serializers.ModelSerializer):
     cost_model=CostModelSerializer(many=True,required=False)
+    attachments=AttachmentSerializer(many=True)
     class Meta:
         model=Request
         fields=["id",
