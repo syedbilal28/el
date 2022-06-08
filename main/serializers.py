@@ -35,7 +35,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
         fields="__all__"
 class RequestSerializer(serializers.ModelSerializer):
     cost_model=CostModelSerializer(many=True,required=False)
-    attachments=AttachmentSerializer(many=True)
+    attachments=AttachmentSerializer(many=True,required=False)
     class Meta:
         model=Request
         fields=["id",

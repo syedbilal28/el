@@ -88,21 +88,21 @@ WSGI_APPLICATION = 'el.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DATABASE_NAME', ''),
-        'USER': os.environ.get('DATABASE_USER', ''),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
-        'HOST': os.environ.get('DATABASE_HOST', ''),
-        'PORT': os.environ.get('DATABASE_PORT', ''),
-        'OPTIONS': {
-            'sslmode': 'require',
-        }
-    }
-    # 'default':{
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': os.environ.get('DATABASE_NAME', ''),
+    #     'USER': os.environ.get('DATABASE_USER', ''),
+    #     'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+    #     'HOST': os.environ.get('DATABASE_HOST', ''),
+    #     'PORT': os.environ.get('DATABASE_PORT', ''),
+    #     'OPTIONS': {
+    #         'sslmode': 'require',
+    #     }
     # }
+    'default':{
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 # import dj_database_url
 # db_from_env = dj_database_url.config(conn_max_age=500)
@@ -145,17 +145,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL="/media/"
 
+# DEFAULT_FILE_STORAGE = 'main.custom_azure.AzureMediaStorage'
+# STATICFILES_STORAGE = 'main.custom_azure.AzureStaticStorage'
 
-DEFAULT_FILE_STORAGE = 'main.custom_azure.AzureMediaStorage'
-STATICFILES_STORAGE = 'main.custom_azure.AzureStaticStorage'
+# STATIC_LOCATION = "static"
+# MEDIA_LOCATION = "media"
 
-STATIC_LOCATION = "static"
-MEDIA_LOCATION = "media"
+# AZURE_ACCOUNT_NAME = "eltechstorage"
+# AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 
-AZURE_ACCOUNT_NAME = "eltechstorage"
-AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
-
-STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
-MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
+# STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+# MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
