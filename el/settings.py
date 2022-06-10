@@ -144,8 +144,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
-MEDIA_URL="/media/"
 import os
 STATIC_ROOT= os.path.join(BASE_DIR,"static")
 DEFAULT_FILE_STORAGE = 'main.custom_azure.AzureMediaStorage'
