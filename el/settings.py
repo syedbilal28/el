@@ -146,7 +146,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL="/media/"
-
+import os
+STATIC_ROOT= os.path.join(BASE_DIR,"static")
 DEFAULT_FILE_STORAGE = 'main.custom_azure.AzureMediaStorage'
 STATICFILES_STORAGE = 'main.custom_azure.AzureStaticStorage'
 
