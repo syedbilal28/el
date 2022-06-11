@@ -149,15 +149,21 @@ STATIC_ROOT= os.path.join(BASE_DIR,"static")
 # STATICFILES_DIRS=[
 #     os.path.join(BASE_DIR,"static")
 # ]
-DEFAULT_FILE_STORAGE = 'el.custom_azure.AzureMediaStorage'
-STATICFILES_STORAGE = 'el.custom_azure.AzureStaticStorage'
 
-STATIC_LOCATION = "static"
+
+
+
 MEDIA_LOCATION = "media"
 
 AZURE_ACCOUNT_NAME = "eltechstorage"
+AZURE_ACCOUNT_KEY="IyFO9uWTEjD05LlPBuScWLarIzjQFOfVDH7MNbK+s3V+cMANHvVeP6h5cZ8Vln9c5qwUJcPvZoDF+AStY8dFRA=="
 AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+AZURE_LOCATION="media"
+AZURE_CONTAINER="media"
 
+STATIC_LOCATION = "static"
 STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
-MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+DEFAULT_FILE_STORAGE = 'el.custom_azure.AzureMediaStorage'
+
+# MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
