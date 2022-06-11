@@ -88,21 +88,21 @@ WSGI_APPLICATION = 'el.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DATABASE_NAME', ''),
-        'USER': os.environ.get('DATABASE_USER', ''),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
-        'HOST': os.environ.get('DATABASE_HOST', ''),
-        'PORT': os.environ.get('DATABASE_PORT', ''),
-        'OPTIONS': {
-            'sslmode': 'require',
-        }
-    }
-    # 'default':{
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': os.environ.get('DATABASE_NAME', ''),
+    #     'USER': os.environ.get('DATABASE_USER', ''),
+    #     'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+    #     'HOST': os.environ.get('DATABASE_HOST', ''),
+    #     'PORT': os.environ.get('DATABASE_PORT', ''),
+    #     'OPTIONS': {
+    #         'sslmode': 'require',
+    #     }
     # }
+    'default':{
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 # import dj_database_url
 # db_from_env = dj_database_url.config(conn_max_age=500)
@@ -146,8 +146,11 @@ USE_TZ = True
 
 import os
 STATIC_ROOT= os.path.join(BASE_DIR,"static")
-DEFAULT_FILE_STORAGE = 'main.custom_azure.AzureMediaStorage'
-STATICFILES_STORAGE = 'main.custom_azure.AzureStaticStorage'
+# STATICFILES_DIRS=[
+#     os.path.join(BASE_DIR,"static")
+# ]
+DEFAULT_FILE_STORAGE = 'el.custom_azure.AzureMediaStorage'
+STATICFILES_STORAGE = 'el.custom_azure.AzureStaticStorage'
 
 STATIC_LOCATION = "static"
 MEDIA_LOCATION = "media"
